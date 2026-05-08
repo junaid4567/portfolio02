@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Junaid | Software Engineer</title>
+    <meta name="description" content="Professional profile and portfolio for Mohammad Junaid, Software Engineering student based in Karachi, Pakistan." />
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --font-sans: 'Inter', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+            --accent: #ff5a91;
+            --gold: rgb(193, 163, 98);
+        }
+
+        body {
+            background-color: #050505;
+            color: #fff;
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-display { font-family: var(--font-display); }
+
+        /* Grain Overlay */
+        .grain::before {
+            content: "";
+            position: fixed;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 9999;
+            animation: grain 8s steps(10) infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            30% { transform: translate(-15%, -20%); }
+            50% { transform: translate(-5%, -10%); }
+            70% { transform: translate(-15%, -20%); }
+            90% { transform: translate(-5%, -10%); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        /* Gold Reveal Button */
+        .btn-gold-reveal {
+            cursor: pointer;
+            position: relative;
+            padding: 12px 32px;
+            font-size: 10px;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            border-radius: 34px;
+            background-color: transparent;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .btn-gold-reveal::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 50px;
+            height: 50px;
+            border-radius: inherit;
+            transform: scale(0);
+            z-index: -1;
+            background-color: var(--gold);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .btn-gold-reveal:hover::before,
+        .btn-gold-reveal.active::before {
+            transform: scale(4);
+        }
+
+        .btn-gold-reveal:hover,
+        .btn-gold-reveal.active {
+            color: #212121;
+            transform: scale(1.05);
+            box-shadow: 0 0px 20px rgba(193, 163, 98, 0.4);
+        }
+
+        /* Expanding Accordion Grid */
+        .expanding-grid { display: flex; transition: all 0.5s ease; }
+        .project-pane {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            background: #080808;
+            cursor: pointer;
+        }
+
+        .project-pane:hover { flex: 8; }
+
+        .project-pane-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.1);
+            font-family: var(--font-display);
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .project-pane-label { transform: translate(-50%, -50%) rotate(0); font-size: 1rem; }
+        }
+
+        .project-pane:hover .project-pane-label { opacity: 0; letter-spacing: 1em; }
+
+        .project-pane-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.1;
+            transition: all 0.8s ease;
+            filter: grayscale(1) brightness(0.4);
+            transform: scale(1.1);
+        }
+
+        .project-pane:hover .project-pane-img {
+            opacity: 0.6;
+            filter: grayscale(0) brightness(0.6);
+            transform: scale(1);
+        }
+
+        .project-content-reveal {
+            position: absolute;
+            inset: 0;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s 0.2s ease;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+
+        .project-pane:hover .project-content-reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Reveal Animation on Scroll */
+        [data-reveal] {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        [data-reveal].revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Entrance */
+        .hero-reveal {
+            overflow: hidden;
+            display: block;
+        }
+        .hero-reveal span {
+            display: block;
+            transform: translateY(100%);
+            animation: reveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes reveal { to { transform: translateY(0); } }
+
+        /* Preloader */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: #050505;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+    </style>
+</head>
+<body class="grain" x-data="{ 
+    loading: true,
+    submitted: false,
+    activeCategory: 'All',
+    categories: ['All', 'Academic', 'Systems', 'Motion'],
+    projects: [
+        { id: 1, title: 'Aptech Labs', cat: 'Academic', img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80', desc: 'Core software engineering modules and computational logic studies.' },
+        { id: 2, title: 'Ether Frame', cat: 'Systems', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80', desc: 'Developing robust logical frameworks for enterprise scalability.' },
+        { id: 3, title: 'Neo Kinetic', cat: 'Motion', img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80', desc: 'Exploration of dynamic interactions and fluid user experiences.' }
+    ],
+    get filtered() {
+        return this.activeCategory === 'All' ? this.projects : this.projects.filter(p => p.cat === this.activeCategory);
+    }
+}" x-init="
+    setTimeout(() => loading = false, 1500);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('revealed') });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+">
+
+    <!-- Preloader -->
+    <div class="loader" :class="!loading && 'opacity-0 pointer-events-none'">
+        <div class="flex flex-col items-center gap-6">
+            <div class="w-12 h-12 border-2 border-transparent border-t-[#c1a362] rounded-full animate-spin"></div>
+            <span class="text-[9px] uppercase tracking-[0.5em] text-[#c1a362] font-black">INITIALIZING EXPERIENCE</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 px-8 py-10 flex justify-between items-center mix-blend-difference">
+        <a href="#" class="text-3xl font-display tracking-tight text-white uppercase italic font-medium">
+            Junaid<sup class="text-[8px] font-normal font-sans ml-1 opacity-50 italic">SE</sup>
+        </a>
+        <div class="hidden md:flex gap-8 items-center">
+            <a href="#work" class="text-[9px] uppercase tracking-[0.3em] font-black text-white/50 hover:text-white transition-all">Archive</a>
+            <a href="#philosophy" class="text-[9px] uppercase tracking-[0.3em] font-black text-white/50 hover:text-white transition-all">Philosophy</a>
+            <a href="#contact" class="text-[9px] uppercase tracking-[0.3em] font-black text-white/50 hover:text-white transition-all">Connect</a>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main>
+        <!-- Hero Section -->
+        <section class="h-screen flex flex-col justify-center px-8 md:px-20 relative">
+            <div class="relative z-10">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-px bg-white/20"></div>
+                    <span class="text-white/30 text-[9px] font-bold uppercase tracking-[0.5em]">Software Engineering @ Aptech</span>
+                </div>
+                
+                <h1 class="text-[clamp(3.5rem,15vw,10rem)] leading-[0.82] font-normal tracking-tighter uppercase">
+                    <span class="hero-reveal"><span class="text-white/10 italic font-display" style="animation-delay: 0.2s;">THE PROFILE OF</span></span>
+                    <span class="hero-reveal"><span class="text-white" style="animation-delay: 0.4s;">MOHAMMAD JUNAID.</span></span>
+                </h1>
+
+                <div class="mt-16 flex flex-wrap gap-12 text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">
+                    <div class="flex flex-col gap-2">
+                        <span class="opacity-30">Location</span>
+                        <span>KARACHI, PAKISTAN</span>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="opacity-30">Year / Age</span>
+                        <span>EST 2009 / 17</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Grid -->
+        <section id="work" class="py-40 bg-black border-y border-white/5">
+            <div class="px-8 md:px-20 mb-20 flex flex-col md:flex-row md:items-end justify-between gap-10">
+                <div data-reveal>
+                    <h2 class="text-6xl md:text-8xl font-normal tracking-tighter uppercase leading-[0.85]">
+                        Academic <br /><span class="text-white/20 italic font-display">Artifacts</span>
+                    </h2>
+                </div>
+                
+                <div class="flex flex-wrap gap-3" data-reveal>
+                    <template x-for="cat in categories" :key="cat">
+                        <button 
+                            @click="activeCategory = cat"
+                            class="px-8 py-3 rounded-full text-[9px] uppercase tracking-[0.3em] font-black transition-all border"
+                            :class="activeCategory === cat ? 'bg-[#c1a362] border-[#c1a362] text-black' : 'border-white/10 text-white hover:border-white'"
+                            x-text="cat">
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <div class="expanding-grid flex-col md:flex-row h-[600px] md:h-[750px] border-t border-white/5" data-reveal>
+                <template x-for="p in filtered" :key="p.id">
+                    <div class="project-pane group">
+                        <img :src="p.img" class="project-pane-img">
+                        <div class="project-pane-label" x-text="p.title"></div>
+                        <div class="project-content-reveal">
+                            <span class="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500 mb-2" x-text="p.cat"></span>
+                            <h3 class="text-4xl md:text-6xl font-normal text-white leading-none mb-6 italic" x-text="p.title"></h3>
+                            <p class="text-sm md:text-lg text-white/40 max-w-lg mb-10 leading-relaxed font-light" x-text="p.desc"></p>
+                            <span class="text-[9px] uppercase tracking-[0.4em] border-b border-white/20 pb-2 hover:border-white transition-all w-max font-black">Explore Repository</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- Philosophy -->
+        <section id="philosophy" class="py-60 px-8 text-center">
+          <div class="max-w-4xl mx-auto" data-reveal>
+            <p class="text-white/20 text-[10px] uppercase tracking-[0.6em] mb-12 font-black">The Vision</p>
+            <h2 class="text-4xl md:text-7xl leading-tight font-normal uppercase tracking-tighter italic font-display text-white/60 mb-16">
+              "Building the <span class="text-white not-italic font-sans">infrastructure</span> of tomorrow through the <span class="text-[#c1a362] not-italic font-sans">logic</span> of today."
+            </h2>
+            <div class="h-px w-24 bg-white/10 mx-auto mb-16"></div>
+            <p class="text-xl md:text-2xl text-white/30 font-light leading-relaxed">
+              Based in Karachi, I am currently dedicated to mastering Software Engineering at Aptech Learning Institute. I focus on creating clean, scalable code and elegant digital solutions.
+            </p>
+          </div>
+        </section>
+
+        <!-- Contact Form -->
+        <section id="contact" class="py-40 bg-white text-black relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-8 relative z-10">
+                <div data-reveal>
+                    <h2 class="text-7xl md:text-[10rem] leading-[0.8] font-normal uppercase tracking-tighter mb-24">
+                        Ready for <br />the <span class="italic font-display text-gray-400">Future?</span>
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-24">
+                        <div class="flex flex-col gap-16">
+                            <div>
+                                <p class="text-gray-400 text-[9px] uppercase tracking-[0.4em] mb-6 font-black">Secure Line</p>
+                                <a href="mailto:junaidoften1@gmail.com" class="text-3xl md:text-5xl font-display tracking-tighter hover:italic transition-all border-b border-black pb-2">junaidoften1@gmail.com</a>
+                                <p class="mt-4 text-2xl font-display font-light">+92 332 0214101</p>
+                            </div>
+                            
+                            <div class="flex gap-8 text-[10px] uppercase tracking-[0.4em] font-black text-gray-300">
+                                <a href="#" class="hover:text-black">LinkedIn</a>
+                                <a href="#" class="hover:text-black">GitHub</a>
+                                <a href="#" class="hover:text-black">Discord</a>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/5 p-8 md:p-12 rounded-[2rem] border border-black/5 relative">
+                            <div x-show="submitted" x-transition.opacity class="absolute inset-0 bg-white z-20 flex flex-col justify-center items-center p-12 text-center rounded-[2rem]">
+                                <i data-lucide="check-circle" class="w-12 h-12 mb-6 text-green-500"></i>
+                                <p class="text-2xl font-display italic tracking-tight">Transmission Received.</p>
+                                <button @click="submitted = false" class="mt-8 text-[9px] font-black uppercase tracking-[0.4em] border-b border-black/20 pb-1">Reset</button>
+                            </div>
+
+                            <form @submit.prevent="submitted = true" class="flex flex-col gap-10">
+                                <div class="group border-b border-black/10 focus-within:border-black transition-all">
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Identity</label>
+                                    <input type="text" placeholder="WHO IS ASKING?" required class="w-full bg-transparent py-4 outline-none text-lg">
+                                </div>
+                                <div class="group border-b border-black/10 focus-within:border-black transition-all">
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Electronic Address</label>
+                                    <input type="email" placeholder="WHERE TO REACH?" required class="w-full bg-transparent py-4 outline-none text-lg">
+                                </div>
+                                <div class="group border-b border-black/10 focus-within:border-black transition-all">
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">The Vision</label>
+                                    <textarea placeholder="DESCRIBE YOUR PROPOSAL..." required rows="2" class="w-full bg-transparent py-4 outline-none text-lg resize-none"></textarea>
+                                </div>
+                                <button type="submit" class="bg-black text-white py-6 rounded-full text-[10px] uppercase tracking-[0.5em] font-black transition-all hover:bg-[#c1a362] hover:text-black">
+                                    Begin Transmission
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-20 px-8 text-center bg-black">
+        <div class="w-12 h-px bg-white/10 mx-auto mb-10"></div>
+        <p class="text-[9px] uppercase tracking-[0.6em] text-white/20 font-black">
+            &copy; 2026 ARCHITECTED BY MOHAMMAD JUNAID &bull; ALL RIGHTS RESERVED
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
